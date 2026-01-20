@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB_FACTORY | Restricted</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+        .scanner { height: 2px; width: 100%; background: #0077B6; position: absolute; animation: scan 3s linear infinite; box-shadow: 0 0 15px #0077B6; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+    <div class="glass p-10 rounded-[30px] w-full max-w-sm text-center relative overflow-hidden">
+        <div class="scanner opacity-20"></div>
+        
+        <h1 class="text-3xl font-black italic tracking-tighter mb-2">LABRIOLAG<br><span class="text-blue-500 text-lg not-italic tracking-[5px]">FACTORY</span></h1>
+        <p class="text-[10px] text-gray-600 uppercase tracking-widest mb-10">Unit 001 - Security Protocol</p>
+
+        <div class="space-y-4">
+            <input type="password" id="pass" placeholder="CHAVE DE ACESSO" 
+                class="w-full bg-black border border-gray-800 rounded-xl p-4 text-center text-blue-500 focus:border-blue-600 outline-none transition-all">
+            
+            <button onclick="verify()" 
+                class="w-full bg-blue-700 hover:bg-blue-600 text-white font-black py-4 rounded-xl transition-all active:scale-95">
+                AUTENTICAR
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function verify() {
+            const p = document.getElementById('pass').value;
+            if(p === "1234") { // Sua senha temporária
+                window.location.href = "Lab_Packer.html";
+            } else {
+                alert("ACESSO NEGADO: Célula de segurança ativada.");
+                document.getElementById('pass').value = "";
+            }
+        }
+    </script>
+</body>
+</html>
