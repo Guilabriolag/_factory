@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB_PACKER v2.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; }
+        .card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 24px; }
+        .input-lab { background: #000; border: 1px solid #222; color: #00ff00; border-radius: 12px; }
+        .input-lab:focus { border-color: #0077B6; outline: none; }
+    </style>
+</head>
+<body class="p-6 pb-12">
+    <div class="max-w-md mx-auto">
+        <header class="flex justify-between items-end mb-8">
+            <div>
+                <h2 class="text-2xl font-black italic text-blue-500">LAB_PACKER</h2>
+                <p class="text-[9px] text-gray-600 uppercase tracking-[2px]">Maternidade de Células Software</p>
+            </div>
+            <a href="index.html" class="text-[10px] text-gray-700 border border-gray-900 px-3 py-1 rounded-lg">SAIR</a>
+        </header>
+
+        <div class="card p-6 mb-4">
+            <h3 class="text-[10px] font-bold text-blue-400 uppercase mb-4 tracking-widest">1. Identidade do Cliente</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[9px] text-gray-500 ml-1">DOMÍNIO (ex: labriolag.shop)</label>
+                    <input type="text" id="dom" value="labriolag.shop" class="input-lab w-full p-4 text-sm mt-1">
+                </div>
+                <div>
+                    <label class="text-[9px] text-gray-500 ml-1">ID ÚNICO (ex: LAB-01-PIZZA)</label>
+                    <input type="text" id="cid" class="input-lab w-full p-4 text-sm mt-1" placeholder="NOME-CLIENTE">
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 mb-6">
+            <h3 class="text-[10px] font-bold text-blue-400 uppercase mb-4 tracking-widest">2. Banco de Dados (JSON)</h3>
+            <textarea id="json-data" class="input-lab w-full h-40 p-4 text-xs font-mono" placeholder='Cole o JSON aqui...'></textarea>
+        </div>
+
+        <button onclick="generate()" class="w-full bg-blue-600 py-5 rounded-2xl font-black text-white shadow-lg shadow-blue-900/20 active:scale-95 transition-all">
+            GERAR DEPLOYMENT
+        </button>
+
+        <div id="result-box" class="hidden mt-8 space-y-4">
+            <div class="p-4 bg-green-900/10 border border-green-500/20 rounded-2xl">
+                <p class="text-[10px] text-green-500 font-bold mb-3 uppercase">CÓDIGO PARA O INDEX.HTML:</p>
+                <textarea id="res-html" readonly class="w-full h-32 bg-transparent text-[#0f0] text-[10px] border-none focus:ring-0"></textarea>
+                <button onclick="copy('res-html')" class="w-full bg-green-600 text-white py-2 rounded-lg text-[10px] font-bold mt-2">COPIAR INDEX</button>
+            </div>
+
+            <div class="p-4 bg-blue-900/10 border border-blue-500/20 rounded-2xl">
+                <p class="text-[10px] text-blue-500 font-bold mb-3 uppercase">CONTEÚDO PARA LICENSE.LAB:</p>
+                <input id="res-lic" readonly class="w-full bg-transparent text-blue-300 text-[10px] border-none focus:ring-0">
+                <button onclick="copy('res-lic')" class="w-full bg-blue-600 text-white py-2 rounded-lg text-[10px] font-bold mt-2">COPIAR LICENÇA</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generate() {
+            const dom = document.getElementById('dom').value.trim();
+            const cid = document.getElementById('cid').value.trim();
+            const salt = "LABRIOLAG_PRO_2026_@!"; 
+            
+            if(!dom || !cid) return alert("Preencha o domínio e o ID!");
+
+            // 1. Gera Licença
+            const license = btoa(dom + "|" + cid + "|" + salt);
+            document.getElementById('res-lic').value = license;
+
+            // 2. Gera HTML
+            const html = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://labriolag.shop/shared-components/global-lab.css">
+</head>
+<body style="background:#000">
+    <div id="app"></div>
+    <script src="https://labriolag.shop/shared-components/scripts/lab-shield.js"><\/script>
+    <script>
+        checkLabLicense("${cid}").then(ok => {
+            if(ok) {
+                const s = document.createElement('script');
+                s.src = "https://labriolag.shop/Lab_Menu/engine/render.js";
+                document.body.appendChild(s);
+            }
+        });
+    <\/script>
+</body>
+</html>`;
+            
+            document.getElementById('res-html').value = html;
+            document.getElementById('result-box').classList.remove('hidden');
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function copy(id) {
+            const el = document.getElementById(id);
+            el.select();
+            navigator.clipboard.writeText(el.value);
+            alert("Copiado!");
+        }
+    </script>
+</body>
+</html>
